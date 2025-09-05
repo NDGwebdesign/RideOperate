@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChatHistory">
+    <accountData>
+      <list>
+        <AccountData>
+          <accountId value="VXNlcjo0ODM2NjU=" />
+          <chats>
+            <list>
+              <chat>
+                <internalId value="f0a85068-2af1-46f0-a133-3e4eb9bf9885" />
+              </chat>
+              <chat>
+                <internalId value="c2f8858f-183e-4450-8ca3-70e91fed241c" />
+              </chat>
+              <chat>
+                <internalId value="85dd2345-f96b-44fa-8e0d-1ea36e0a74f2" />
+              </chat>
+              <chat>
+                <internalId value="642b44c8-722c-43b9-8e30-b7079ad85fe5" />
+              </chat>
+              <chat>
+                <internalId value="5551e2d0-4887-41f2-bdeb-92c6ac8bb8b5" />
+              </chat>
+              <chat>
+                <internalId value="59ec7771-f678-49fa-8bed-b60819375b69" />
+              </chat>
+              <chat>
+                <internalId value="52e7f2ff-98aa-4740-a16f-acd5a4f97740" />
+              </chat>
+              <chat>
+                <internalId value="ef842f53-a741-4e11-b5ff-92db12d614f1" />
+              </chat>
+              <chat>
+                <internalId value="2025752c-6520-42a9-80b9-553b42e72402" />
+              </chat>
+              <chat>
+                <internalId value="348e832c-db7f-4249-b9f6-cbf2e72ccfcf" />
+              </chat>
+              <chat>
+                <internalId value="93b61535-8cb3-4b30-8b4a-be6d83c15e86" />
+              </chat>
+              <chat>
+                <internalId value="ddeb8dce-1e27-4c1d-9412-d928fe1f16c8" />
+              </chat>
+              <chat>
+                <internalId value="edf9aa49-5a7e-4eb9-93fd-58be6bd81f9b" />
+              </chat>
+              <chat>
+                <internalId value="288760bd-8587-4ed4-920d-c42365a08732" />
+              </chat>
+              <chat>
+                <internalId value="d168798f-8f49-40d5-9636-e035b865a74a" />
+              </chat>
+              <chat>
+                <internalId value="9b426d5b-db33-458f-ae1c-96e4d222a07d" />
+              </chat>
+              <chat>
+                <internalId value="4779c3f3-6162-4003-9bf9-c682753c93ac" />
+              </chat>
+              <chat>
+                <internalId value="75b2f3ea-afc6-4a15-84c6-839ad7cd4c3e" />
+                <messages>
+                  <list>
+                    <message>
+                      <speaker value="HUMAN" />
+                      <text value="maak deze code goed dat je de lore kan aanpassen. en maak het dat het op deze mannier in de panel.yml komt&#10;&#10;&amp;quot;example:&#10;    Power:&#10;      metial: REDSTONE_TORCH&#10;      lore: This is the power button!&#10;    Gates:&#10;      metail: OAK_FENCE_GATE&#10;      lore: This is the gates button!&#10;    Dispatch:&#10;      metail: MINECART&#10;      lore: This is the dispatch button!&#10;    safety-bar:&#10;      metail: IRON_TRAPDOOR&#10;      lore: This is the safety-bar button!&#10;    Commands:&#10;      Power: /power_command&#10;      Gates: /gates_command&#10;      Dispatch: /dispatch_command&#10;      safety-bar: /safetybar_command&amp;quot;&#10;&#10;&amp;quot;package me.frp.rideoperate.commands;&#10;&#10;import me.frp.rideoperate.RideOperate;&#10;import org.bukkit.Bukkit;&#10;import org.bukkit.Material;&#10;import org.bukkit.command.Command;&#10;import org.bukkit.command.CommandExecutor;&#10;import org.bukkit.command.CommandSender;&#10;import org.bukkit.command.ConsoleCommandSender;&#10;import org.bukkit.configuration.file.YamlConfiguration;&#10;import org.bukkit.entity.Player;&#10;import org.bukkit.event.EventHandler;&#10;import org.bukkit.event.Listener;&#10;import org.bukkit.event.inventory.InventoryClickEvent;&#10;&#10;import java.io.File;&#10;import java.io.IOException;&#10;&#10;public class CreatePanel implements CommandExecutor, Listener {&#10;&#10;    private final RideOperate plugin;&#10;&#10;    public CreatePanel(RideOperate plugin) {&#10;        this.plugin = plugin;&#10;&#10;        // Register the listener&#10;        Bukkit.getPluginManager().registerEvents(this, plugin);&#10;&#10;        // Load the default panel.yml if it doesn't exist&#10;        plugin.saveDefaultConfig();&#10;    }&#10;&#10;    @Override&#10;    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {&#10;        if (!(sender instanceof Player)) {&#10;            sender.sendMessage(&amp;quot;Only players can use this command!&amp;quot;);&#10;            return true;&#10;        }&#10;&#10;        Player player = (Player) sender;&#10;&#10;        // Check if the player has the required permission to use the command&#10;        if (!player.hasPermission(&amp;quot;rideoperate.createpanel&amp;quot;)) {&#10;            String nopermission = plugin.getConfig().getString(&amp;quot;messages.nopermission&amp;quot;);&#10;            player.sendMessage(nopermission);&#10;            return true;&#10;        }&#10;&#10;        if (args.length != 1) {&#10;            player.sendMessage(&amp;quot;Usage: /createpanel &amp;lt;panelName&amp;gt;&amp;quot;);&#10;            return true;&#10;        }&#10;&#10;        String panelName = args[0].toLowerCase();&#10;&#10;        // Check if the panel already exists&#10;        if (panelExists(panelName)) {&#10;            String allexist = plugin.getConfig().getString(&amp;quot;messages.allexist&amp;quot;);&#10;            player.sendMessage(allexist.replace(&amp;quot;%panelName%&amp;quot;, panelName));&#10;            return true;&#10;        } else {&#10;            createPanel(panelName);&#10;&#10;            String successMessage = plugin.getConfig().getString(&amp;quot;messages.successfullycreated&amp;quot;);&#10;            if (successMessage != null &amp;amp;&amp;amp; !successMessage.isEmpty()) {&#10;                // Voeg het paneelnaam toe aan het bericht&#10;                successMessage = successMessage.replace(&amp;quot;%panelName%&amp;quot;, panelName);&#10;                player.sendMessage(successMessage);&#10;            } else {&#10;                // Standaard bericht als er geen bericht is geconfigureerd&#10;                player.sendMessage(&amp;quot;Panel '&amp;quot; + panelName + &amp;quot;' successfully created!&amp;quot;);&#10;            }&#10;&#10;            return true;&#10;        }&#10;&#10;    }&#10;&#10;    private boolean panelExists(String panelName) {&#10;        File configFile = new File(plugin.getDataFolder(), &amp;quot;panel.yml&amp;quot;);&#10;        if (!configFile.exists()) {&#10;            return false;&#10;        }&#10;&#10;        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;        return config.contains(&amp;quot;panels.&amp;quot; + panelName);&#10;    }&#10;&#10;    private void createPanel(String panelName) {&#10;        File configFile = new File(plugin.getDataFolder(), &amp;quot;panel.yml&amp;quot;);&#10;&#10;        // Load existing data from panel.yml&#10;        if (!configFile.exists()) {&#10;            try {&#10;                configFile.createNewFile();&#10;            } catch (IOException e) {&#10;                e.printStackTrace();&#10;            }&#10;        }&#10;&#10;        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;        // Set default values for the new panel&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Power.metial&amp;quot;, &amp;quot;REDSTONE_TORCH&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Power.lore&amp;quot;, &amp;quot;This is the power button!&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Gates.metial&amp;quot;, &amp;quot;OAK_FENCE_GATE&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Gates.lore&amp;quot;, &amp;quot;This is the gate button!&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Dispatch.metial&amp;quot;, &amp;quot;MINECART&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Dispatch.lore&amp;quot;, &amp;quot;This is the dispatch button!&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.safety-bar.metial&amp;quot;, &amp;quot;IRON_TRAPDOOR&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.safety-bar.lore&amp;quot;, &amp;quot;This is the safety bar!&amp;quot;);&#10;&#10;        // Set default commands for the new panel&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Commands.Power&amp;quot;, &amp;quot;/power_command&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Commands.Gates&amp;quot;, &amp;quot;/gates_command&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Commands.Dispatch&amp;quot;, &amp;quot;/dispatch_command&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Commands.safety-bar&amp;quot;, &amp;quot;/safetybar_command&amp;quot;);&#10;&#10;        // Save the configuration to the file&#10;        try {&#10;            config.save(configFile);&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    @EventHandler&#10;    public void onInventoryClick(InventoryClickEvent event) {&#10;        if (event.getClickedInventory() != null &amp;amp;&amp;amp; event.getClickedInventory().getHolder() instanceof Player) {&#10;            Player player = (Player) event.getClickedInventory().getHolder();&#10;&#10;            // Check if the clicked inventory has a custom name (Panel)&#10;            if (event.getView().getTitle().equals(&amp;quot;Panel&amp;quot;)) {&#10;                event.setCancelled(true); // Prevent item pickup&#10;&#10;                if (event.getCurrentItem() != null &amp;amp;&amp;amp; event.getCurrentItem().getType() != Material.AIR) {&#10;                    // Perform the command associated with the clicked item&#10;                    String itemName = event.getCurrentItem().getItemMeta().getDisplayName();&#10;                    String command = plugin.getConfig().getString(&amp;quot;panels.&amp;quot; + player.getName() + &amp;quot;.&amp;quot; + itemName + &amp;quot;.Commands.&amp;quot; + itemName);&#10;&#10;                    if (command != null &amp;amp;&amp;amp; !command.isEmpty()) {&#10;                        // Check if the player has the permission for the specific command&#10;                        if (!player.hasPermission(&amp;quot;rideoperate.execute.&amp;quot; + itemName)) {&#10;                            String nopermission = plugin.getConfig().getString(&amp;quot;messages.nopermission&amp;quot;);&#10;                            player.sendMessage(nopermission);&#10;                            return;&#10;                        }&#10;&#10;                        // Execute the command&#10;                        Bukkit.dispatchCommand(player, command);&#10;                    }&#10;                }&#10;            }&#10;        }&#10;    }&#10;}&#10;&amp;quot;" />
+                    </message>
+                    <message>
+                      <speaker value="ASSISTANT" />
+                      <text value="Certainly! I've made the necessary modifications to the code to allow for customizable lore and ensure it's properly formatted in the panel.yml file. Here's the updated createPanel method:&#10;&#10;```java&#10;private void createPanel(String panelName) {&#10;    File configFile = new File(plugin.getDataFolder(), &quot;panel.yml&quot;);&#10;&#10;    if (!configFile.exists()) {&#10;        try {&#10;            configFile.createNewFile();&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;&#10;    // Set default values for the new panel&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Power.material&quot;, &quot;REDSTONE_TORCH&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Power.lore&quot;, &quot;This is the power button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Gates.material&quot;, &quot;OAK_FENCE_GATE&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Gates.lore&quot;, &quot;This is the gates button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Dispatch.material&quot;, &quot;MINECART&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Dispatch.lore&quot;, &quot;This is the dispatch button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.safety-bar.material&quot;, &quot;IRON_TRAPDOOR&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.safety-bar.lore&quot;, &quot;This is the safety-bar button!&quot;);&#10;&#10;    // Set default commands for the new panel&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Power&quot;, &quot;/power_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Gates&quot;, &quot;/gates_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Dispatch&quot;, &quot;/dispatch_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.safety-bar&quot;, &quot;/safetybar_command&quot;);&#10;&#10;    try {&#10;        config.save(configFile);&#10;    } catch (IOException e) {&#10;        e.printStackTrace();&#10;    }&#10;}&#10;```&#10;&#10;This updated code will create the panel structure in the panel.yml file as requested. The lore for each button is now customizable and stored in the configuration file.&#10;&#10;To allow for easy modification of the lore, you can add a method to update the lore for a specific button:&#10;&#10;```java&#10;public void updateButtonLore(String panelName, String buttonName, String newLore) {&#10;    File configFile = new File(plugin.getDataFolder(), &quot;panel.yml&quot;);&#10;    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;&#10;    String path = &quot;panels.&quot; + panelName + &quot;.&quot; + buttonName + &quot;.lore&quot;;&#10;    config.set(path, newLore);&#10;&#10;    try {&#10;        config.save(configFile);&#10;    } catch (IOException e) {&#10;        e.printStackTrace();&#10;    }&#10;}&#10;```&#10;&#10;You can call this method to update the lore for a specific button. For example:&#10;&#10;```java&#10;updateButtonLore(&quot;examplePanel&quot;, &quot;Power&quot;, &quot;New power button lore!&quot;);&#10;```&#10;&#10;This will update the lore for the Power button in the examplePanel.&#10;&#10;The panel.yml file will now have the structure you requested, with customizable lore for each button." />
+                    </message>
+                    <message>
+                      <speaker value="HUMAN" />
+                      <text value="maak bij @...\rideoperate\commands\CreatePanel.java dat je de lore van de item kan aanpassen in de panel.yml" />
+                    </message>
+                    <message>
+                      <speaker value="ASSISTANT" />
+                      <text value="Zeker! Ik zal de CreatePanel.java aanpassen om de lore van items te kunnen wijzigen in de panel.yml. Hier is een methode die we kunnen toevoegen aan de CreatePanel klasse om dit mogelijk te maken:&#10;&#10;```java&#10;public void updateItemLore(String panelName, String itemName, String newLore) {&#10;    File configFile = new File(plugin.getDataFolder(), &quot;panel.yml&quot;);&#10;    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;&#10;    String path = &quot;panels.&quot; + panelName + &quot;.&quot; + itemName + &quot;.lore&quot;;&#10;    config.set(path, newLore);&#10;&#10;    try {&#10;        config.save(configFile);&#10;    } catch (IOException e) {&#10;        e.printStackTrace();&#10;    }&#10;}&#10;```&#10;&#10;Deze methode kan worden aangeroepen om de lore van een specifiek item in een panel bij te werken. Bijvoorbeeld:&#10;&#10;```java&#10;updateItemLore(&quot;examplePanel&quot;, &quot;Power&quot;, &quot;Dit is de nieuwe lore voor de power knop!&quot;);&#10;```&#10;&#10;Dit zal de lore updaten voor het Power item in het examplePanel.&#10;&#10;Daarnaast moeten we de createPanel methode aanpassen om de juiste structuur in de panel.yml te creëren:&#10;&#10;```java&#10;private void createPanel(String panelName) {&#10;    File configFile = new File(plugin.getDataFolder(), &quot;panel.yml&quot;);&#10;&#10;    if (!configFile.exists()) {&#10;        try {&#10;            configFile.createNewFile();&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Power.material&quot;, &quot;REDSTONE_TORCH&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Power.lore&quot;, &quot;This is the power button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Gates.material&quot;, &quot;OAK_FENCE_GATE&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Gates.lore&quot;, &quot;This is the gates button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Dispatch.material&quot;, &quot;MINECART&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Dispatch.lore&quot;, &quot;This is the dispatch button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.safety-bar.material&quot;, &quot;IRON_TRAPDOOR&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.safety-bar.lore&quot;, &quot;This is the safety-bar button!&quot;);&#10;&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Power&quot;, &quot;/power_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Gates&quot;, &quot;/gates_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Dispatch&quot;, &quot;/dispatch_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.safety-bar&quot;, &quot;/safetybar_command&quot;);&#10;&#10;    try {&#10;        config.save(configFile);&#10;    } catch (IOException e) {&#10;        e.printStackTrace();&#10;    }&#10;}&#10;```&#10;&#10;Deze aanpassingen zorgen ervoor dat de lore van items in de panel.yml kan worden aangepast en dat de structuur van het bestand overeenkomt met het gewenste formaat." />
+                    </message>
+                    <message>
+                      <speaker value="HUMAN" />
+                      <text value="maak bij @...\rideoperate\commands\CreatePanel.java dat je de lore van de item kan aanpassen in de panel.yml" />
+                    </message>
+                    <message>
+                      <speaker value="ASSISTANT" />
+                      <text value="Zeker! Ik zal de CreatePanel.java aanpassen om de lore van items te kunnen wijzigen in de panel.yml. Hier is de code die we kunnen toevoegen aan de CreatePanel klasse:&#10;&#10;```java&#10;public void updateItemLore(String panelName, String itemName, String newLore) {&#10;    File configFile = new File(plugin.getDataFolder(), &quot;panel.yml&quot;);&#10;    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;&#10;    String path = &quot;panels.&quot; + panelName + &quot;.&quot; + itemName + &quot;.lore&quot;;&#10;    config.set(path, newLore);&#10;&#10;    try {&#10;        config.save(configFile);&#10;    } catch (IOException e) {&#10;        e.printStackTrace();&#10;    }&#10;}&#10;```&#10;&#10;Deze methode kan worden gebruikt om de lore van een specifiek item in een panel bij te werken. Bijvoorbeeld:&#10;&#10;```java&#10;updateItemLore(&quot;examplePanel&quot;, &quot;Power&quot;, &quot;Nieuwe lore voor de power knop!&quot;);&#10;```&#10;&#10;Daarnaast passen we de createPanel methode aan om de juiste structuur in de panel.yml te creëren:&#10;&#10;```java&#10;private void createPanel(String panelName) {&#10;    File configFile = new File(plugin.getDataFolder(), &quot;panel.yml&quot;);&#10;&#10;    if (!configFile.exists()) {&#10;        try {&#10;            configFile.createNewFile();&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Power.material&quot;, &quot;REDSTONE_TORCH&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Power.lore&quot;, &quot;This is the power button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Gates.material&quot;, &quot;OAK_FENCE_GATE&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Gates.lore&quot;, &quot;This is the gates button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Dispatch.material&quot;, &quot;MINECART&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Dispatch.lore&quot;, &quot;This is the dispatch button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.safety-bar.material&quot;, &quot;IRON_TRAPDOOR&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.safety-bar.lore&quot;, &quot;This is the safety-bar button!&quot;);&#10;&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Power&quot;, &quot;/power_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Gates&quot;, &quot;/gates_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Dispatch&quot;, &quot;/dispatch_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.safety-bar&quot;, &quot;/safetybar_command&quot;);&#10;&#10;    try {&#10;        config.save(configFile);&#10;    } catch (IOException e) {&#10;        e.printStackTrace();&#10;    }&#10;}&#10;```&#10;&#10;Deze aanpassingen maken het mogelijk om de lore van items in de panel.yml aan te passen en zorgen ervoor dat de structuur van het bestand overeenkomt met het gewenste formaat." />
+                    </message>
+                    <message>
+                      <speaker value="HUMAN" />
+                      <text value="maak deze code goed dat je de lore kan aanpassen. en maak het dat het op deze mannier in de panel.yml komt&#10;&#10;&amp;quot;package me.frp.rideoperate.commands;&#10;&#10;import me.frp.rideoperate.RideOperate;&#10;import org.bukkit.Bukkit;&#10;import org.bukkit.Material;&#10;import org.bukkit.command.Command;&#10;import org.bukkit.command.CommandExecutor;&#10;import org.bukkit.command.CommandSender;&#10;import org.bukkit.command.ConsoleCommandSender;&#10;import org.bukkit.configuration.file.YamlConfiguration;&#10;import org.bukkit.entity.Player;&#10;import org.bukkit.event.EventHandler;&#10;import org.bukkit.event.Listener;&#10;import org.bukkit.event.inventory.InventoryClickEvent;&#10;&#10;import java.io.File;&#10;import java.io.IOException;&#10;&#10;public class CreatePanel implements CommandExecutor, Listener {&#10;&#10;    private final RideOperate plugin;&#10;&#10;    public CreatePanel(RideOperate plugin) {&#10;        this.plugin = plugin;&#10;&#10;        // Register the listener&#10;        Bukkit.getPluginManager().registerEvents(this, plugin);&#10;&#10;        // Load the default panel.yml if it doesn't exist&#10;        plugin.saveDefaultConfig();&#10;    }&#10;&#10;    @Override&#10;    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {&#10;        if (!(sender instanceof Player)) {&#10;            sender.sendMessage(&amp;quot;Only players can use this command!&amp;quot;);&#10;            return true;&#10;        }&#10;&#10;        Player player = (Player) sender;&#10;&#10;        // Check if the player has the required permission to use the command&#10;        if (!player.hasPermission(&amp;quot;rideoperate.createpanel&amp;quot;)) {&#10;            String nopermission = plugin.getConfig().getString(&amp;quot;messages.nopermission&amp;quot;);&#10;            player.sendMessage(nopermission);&#10;            return true;&#10;        }&#10;&#10;        if (args.length != 1) {&#10;            player.sendMessage(&amp;quot;Usage: /createpanel &amp;lt;panelName&amp;gt;&amp;quot;);&#10;            return true;&#10;        }&#10;&#10;        String panelName = args[0].toLowerCase();&#10;&#10;        // Check if the panel already exists&#10;        if (panelExists(panelName)) {&#10;            String allexist = plugin.getConfig().getString(&amp;quot;messages.allexist&amp;quot;);&#10;            player.sendMessage(allexist.replace(&amp;quot;%panelName%&amp;quot;, panelName));&#10;            return true;&#10;        } else {&#10;            createPanel(panelName);&#10;&#10;            String successMessage = plugin.getConfig().getString(&amp;quot;messages.successfullycreated&amp;quot;);&#10;            if (successMessage != null &amp;amp;&amp;amp; !successMessage.isEmpty()) {&#10;                // Voeg het paneelnaam toe aan het bericht&#10;                successMessage = successMessage.replace(&amp;quot;%panelName%&amp;quot;, panelName);&#10;                player.sendMessage(successMessage);&#10;            } else {&#10;                // Standaard bericht als er geen bericht is geconfigureerd&#10;                player.sendMessage(&amp;quot;Panel '&amp;quot; + panelName + &amp;quot;' successfully created!&amp;quot;);&#10;            }&#10;&#10;            return true;&#10;        }&#10;&#10;    }&#10;&#10;    private boolean panelExists(String panelName) {&#10;        File configFile = new File(plugin.getDataFolder(), &amp;quot;panel.yml&amp;quot;);&#10;        if (!configFile.exists()) {&#10;            return false;&#10;        }&#10;&#10;        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;        return config.contains(&amp;quot;panels.&amp;quot; + panelName);&#10;    }&#10;&#10;    private void createPanel(String panelName) {&#10;        File configFile = new File(plugin.getDataFolder(), &amp;quot;panel.yml&amp;quot;);&#10;&#10;        // Load existing data from panel.yml&#10;        if (!configFile.exists()) {&#10;            try {&#10;                configFile.createNewFile();&#10;            } catch (IOException e) {&#10;                e.printStackTrace();&#10;            }&#10;        }&#10;&#10;        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;        // Set default values for the new panel&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Power.metial&amp;quot;, &amp;quot;REDSTONE_TORCH&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Power.lore&amp;quot;, &amp;quot;This is the power button!&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Gates.metial&amp;quot;, &amp;quot;OAK_FENCE_GATE&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Gates.lore&amp;quot;, &amp;quot;This is the gate button!&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Dispatch.metial&amp;quot;, &amp;quot;MINECART&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Dispatch.lore&amp;quot;, &amp;quot;This is the dispatch button!&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.safety-bar.metial&amp;quot;, &amp;quot;IRON_TRAPDOOR&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.safety-bar.lore&amp;quot;, &amp;quot;This is the safety bar!&amp;quot;);&#10;&#10;        // Set default commands for the new panel&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Commands.Power&amp;quot;, &amp;quot;/power_command&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Commands.Gates&amp;quot;, &amp;quot;/gates_command&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Commands.Dispatch&amp;quot;, &amp;quot;/dispatch_command&amp;quot;);&#10;        config.set(&amp;quot;panels.&amp;quot; + panelName + &amp;quot;.Commands.safety-bar&amp;quot;, &amp;quot;/safetybar_command&amp;quot;);&#10;&#10;        // Save the configuration to the file&#10;        try {&#10;            config.save(configFile);&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    @EventHandler&#10;    public void onInventoryClick(InventoryClickEvent event) {&#10;        if (event.getClickedInventory() != null &amp;amp;&amp;amp; event.getClickedInventory().getHolder() instanceof Player) {&#10;            Player player = (Player) event.getClickedInventory().getHolder();&#10;&#10;            // Check if the clicked inventory has a custom name (Panel)&#10;            if (event.getView().getTitle().equals(&amp;quot;Panel&amp;quot;)) {&#10;                event.setCancelled(true); // Prevent item pickup&#10;&#10;                if (event.getCurrentItem() != null &amp;amp;&amp;amp; event.getCurrentItem().getType() != Material.AIR) {&#10;                    // Perform the command associated with the clicked item&#10;                    String itemName = event.getCurrentItem().getItemMeta().getDisplayName();&#10;                    String command = plugin.getConfig().getString(&amp;quot;panels.&amp;quot; + player.getName() + &amp;quot;.&amp;quot; + itemName + &amp;quot;.Commands.&amp;quot; + itemName);&#10;&#10;                    if (command != null &amp;amp;&amp;amp; !command.isEmpty()) {&#10;                        // Check if the player has the permission for the specific command&#10;                        if (!player.hasPermission(&amp;quot;rideoperate.execute.&amp;quot; + itemName)) {&#10;                            String nopermission = plugin.getConfig().getString(&amp;quot;messages.nopermission&amp;quot;);&#10;                            player.sendMessage(nopermission);&#10;                            return;&#10;                        }&#10;&#10;                        // Execute the command&#10;                        Bukkit.dispatchCommand(player, command);&#10;                    }&#10;                }&#10;            }&#10;        }&#10;    }&#10;}&#10;&amp;quot;" />
+                    </message>
+                    <message>
+                      <speaker value="ASSISTANT" />
+                      <text value="Certainly! I'll modify the code to allow for customizable lore and ensure it's formatted correctly in the panel.yml file. Here's the updated createPanel method:&#10;&#10;```java&#10;private void createPanel(String panelName) {&#10;    File configFile = new File(plugin.getDataFolder(), &quot;panel.yml&quot;);&#10;&#10;    if (!configFile.exists()) {&#10;        try {&#10;            configFile.createNewFile();&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;&#10;    // Set default values for the new panel&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Power.material&quot;, &quot;REDSTONE_TORCH&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Power.lore&quot;, &quot;This is the power button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Gates.material&quot;, &quot;OAK_FENCE_GATE&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Gates.lore&quot;, &quot;This is the gates button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Dispatch.material&quot;, &quot;MINECART&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Dispatch.lore&quot;, &quot;This is the dispatch button!&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.safety-bar.material&quot;, &quot;IRON_TRAPDOOR&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.safety-bar.lore&quot;, &quot;This is the safety-bar button!&quot;);&#10;&#10;    // Set default commands for the new panel&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Power&quot;, &quot;/power_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Gates&quot;, &quot;/gates_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.Dispatch&quot;, &quot;/dispatch_command&quot;);&#10;    config.set(&quot;panels.&quot; + panelName + &quot;.Commands.safety-bar&quot;, &quot;/safetybar_command&quot;);&#10;&#10;    try {&#10;        config.save(configFile);&#10;    } catch (IOException e) {&#10;        e.printStackTrace();&#10;    }&#10;}&#10;```&#10;&#10;To allow for easy modification of the lore, add this method to the CreatePanel class:&#10;&#10;```java&#10;public void updateItemLore(String panelName, String itemName, String newLore) {&#10;    File configFile = new File(plugin.getDataFolder(), &quot;panel.yml&quot;);&#10;    YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);&#10;&#10;    String path = &quot;panels.&quot; + panelName + &quot;.&quot; + itemName + &quot;.lore&quot;;&#10;    config.set(path, newLore);&#10;&#10;    try {&#10;        config.save(configFile);&#10;    } catch (IOException e) {&#10;        e.printStackTrace();&#10;    }&#10;}&#10;```&#10;&#10;You can now call this method to update the lore for a specific item in a panel:&#10;&#10;```java&#10;updateItemLore(&quot;examplePanel&quot;, &quot;Power&quot;, &quot;New power button lore!&quot;);&#10;```&#10;&#10;These changes will allow you to customize the lore of items in the panel.yml file and ensure the correct structure is maintained." />
+                    </message>
+                  </list>
+                </messages>
+                <updatedAt value="2024-07-31T11:40:10.2339805" />
+              </chat>
+              <chat>
+                <internalId value="b99142a4-ce49-4575-a763-d06199d87cb4" />
+              </chat>
+              <chat>
+                <internalId value="ee42e7e1-8678-4ca1-8992-8f71cba11810" />
+              </chat>
+              <chat>
+                <internalId value="1dccf564-bc3e-49fe-8668-0d5a936786d1" />
+              </chat>
+              <chat>
+                <internalId value="ce212baa-66f0-4df7-b237-01cacdbdc1a0" />
+              </chat>
+              <chat>
+                <internalId value="2bf56aa5-84c4-4478-b042-b9bc9afbcfcc" />
+              </chat>
+              <chat>
+                <internalId value="e62576e3-2075-406c-9677-fe7380dad864" />
+              </chat>
+              <chat>
+                <internalId value="6addc65d-e126-4f6d-8e24-21d83d7eeefa" />
+              </chat>
+              <chat>
+                <internalId value="559d0cd3-d7af-44ab-8712-6901454735fa" />
+              </chat>
+              <chat>
+                <internalId value="0803a184-9b14-4749-9555-f7b930a153d2" />
+              </chat>
+              <chat>
+                <internalId value="f0d0aab9-ae79-4c31-9405-fadc47d998f1" />
+              </chat>
+              <chat>
+                <internalId value="ed46731c-dc96-4bfc-8e53-76216ffa8550" />
+              </chat>
+              <chat>
+                <internalId value="82dc6137-4550-432c-8e5b-40a026cf4b57" />
+                <messages>
+                  <list>
+                    <message>
+                      <speaker value="HUMAN" />
+                      <text value="maak een code dat je een custom model (json file) kan plaatsen als panel met de plugin @...\frp\rideoperate\ModelPanel.java &#10;&#10;&amp;quot;package me.frp.rideoperate;&#10;&#10;public class ModelPanel {&#10;}&#10;&amp;quot;" />
+                    </message>
+                    <message>
+                      <speaker value="ASSISTANT" />
+                      <text value="Certainly! I'll create a code snippet that allows you to place a custom model (from a JSON file) as a panel using the ModelPanel class. Here's an enhanced version of the ModelPanel class that incorporates this functionality:&#10;&#10;```java&#10;package me.frp.rideoperate;&#10;&#10;import org.bukkit.plugin.java.JavaPlugin;&#10;import org.bukkit.entity.Player;&#10;import org.bukkit.util.Vector;&#10;import org.bukkit.Location;&#10;import org.bukkit.configuration.file.YamlConfiguration;&#10;import java.io.File;&#10;import java.io.IOException;&#10;&#10;public class ModelPanel {&#10;    private JavaPlugin plugin;&#10;    private String modelName;&#10;    private Vector position;&#10;    private Vector rotation;&#10;&#10;    public ModelPanel(JavaPlugin plugin, String jsonFileName) {&#10;        this.plugin = plugin;&#10;        this.modelName = jsonFileName.replace(&quot;.json&quot;, &quot;&quot;);&#10;        this.position = new Vector(0, 0, 0);&#10;        this.rotation = new Vector(0, 0, 0);&#10;        loadModel();&#10;    }&#10;&#10;    private void loadModel() {&#10;        File modelFile = new File(plugin.getDataFolder(), &quot;models/&quot; + modelName + &quot;.json&quot;);&#10;        if (!modelFile.exists()) {&#10;            plugin.saveResource(&quot;models/&quot; + modelName + &quot;.json&quot;, false);&#10;        }&#10;    }&#10;&#10;    public void placePanel(Location location) {&#10;        // This method would use a custom model rendering system to display the model&#10;        // For this example, we'll just save the panel's location to a config file&#10;        YamlConfiguration config = new YamlConfiguration();&#10;        config.set(&quot;location&quot;, location);&#10;        config.set(&quot;modelName&quot;, modelName);&#10;        &#10;        try {&#10;            config.save(new File(plugin.getDataFolder(), &quot;panels.yml&quot;));&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    public void showToPlayer(Player player) {&#10;        // This method would use a packet system to show the custom model to the player&#10;        player.sendMessage(&quot;Showing model panel: &quot; + modelName);&#10;    }&#10;&#10;    public void setPosition(Vector position) {&#10;        this.position = position;&#10;    }&#10;&#10;    public void setRotation(Vector rotation) {&#10;        this.rotation = rotation;&#10;    }&#10;}&#10;```&#10;&#10;This enhanced ModelPanel class provides the following functionality:&#10;&#10;1. It takes a JavaPlugin instance and a JSON filename in the constructor.&#10;2. It loads the custom model JSON file from the plugin's data folder.&#10;3. It provides methods to place the panel at a specific location and show it to players.&#10;4. It includes setters for position and rotation.&#10;&#10;To use this class in your plugin, you would do something like this:&#10;&#10;```java&#10;public class YourPlugin extends JavaPlugin {&#10;    @Override&#10;    public void onEnable() {&#10;        ModelPanel panel = new ModelPanel(this, &quot;your_custom_model.json&quot;);&#10;        panel.setPosition(new Vector(10, 64, 10));&#10;        panel.setRotation(new Vector(0, 45, 0));&#10;        panel.placePanel(new Location(getServer().getWorld(&quot;world&quot;), 10, 64, 10));&#10;        &#10;        // Show to a specific player&#10;        Player player = getServer().getPlayer(&quot;PlayerName&quot;);&#10;        if (player != null) {&#10;            panel.showToPlayer(player);&#10;        }&#10;    }&#10;}&#10;```&#10;&#10;This code provides a foundation for working with custom model panels. You'll need to implement the actual model rendering and packet sending based on the specific system you're using for custom models in your Minecraft server." />
+                    </message>
+                    <message>
+                      <speaker value="HUMAN" />
+                      <text value="maak er een command bij dat je de model geeft en kan plaatsen als block" />
+                    </message>
+                    <message>
+                      <speaker value="ASSISTANT" />
+                      <text value="Certainly! I'll add a command to the ModelPanel class that allows you to give and place the model as a block. Here's an updated version of the ModelPanel class with the new command:&#10;&#10;```java&#10;package me.frp.rideoperate;&#10;&#10;import org.bukkit.plugin.java.JavaPlugin;&#10;import org.bukkit.command.Command;&#10;import org.bukkit.command.CommandExecutor;&#10;import org.bukkit.command.CommandSender;&#10;import org.bukkit.entity.Player;&#10;import org.bukkit.util.Vector;&#10;import org.bukkit.Location;&#10;import org.bukkit.Material;&#10;import org.bukkit.inventory.ItemStack;&#10;import org.bukkit.inventory.meta.ItemMeta;&#10;&#10;public class ModelPanel implements CommandExecutor {&#10;    private JavaPlugin plugin;&#10;    private String modelName;&#10;&#10;    public ModelPanel(JavaPlugin plugin) {&#10;        this.plugin = plugin;&#10;        this.modelName = &quot;custom_model&quot;;&#10;        plugin.getCommand(&quot;modelblock&quot;).setExecutor(this);&#10;    }&#10;&#10;    @Override&#10;    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {&#10;        if (!(sender instanceof Player)) {&#10;            sender.sendMessage(&quot;This command can only be used by players.&quot;);&#10;            return true;&#10;        }&#10;&#10;        Player player = (Player) sender;&#10;&#10;        if (args.length &lt; 1) {&#10;            player.sendMessage(&quot;Usage: /modelblock &lt;give|place&gt;&quot;);&#10;            return true;&#10;        }&#10;&#10;        if (args[0].equalsIgnoreCase(&quot;give&quot;)) {&#10;            giveModelBlock(player);&#10;            return true;&#10;        } else if (args[0].equalsIgnoreCase(&quot;place&quot;)) {&#10;            placeModelBlock(player);&#10;            return true;&#10;        }&#10;&#10;        player.sendMessage(&quot;Invalid argument. Use 'give' or 'place'.&quot;);&#10;        return true;&#10;    }&#10;&#10;    private void giveModelBlock(Player player) {&#10;        ItemStack modelBlock = new ItemStack(Material.BARRIER);&#10;        ItemMeta meta = modelBlock.getItemMeta();&#10;        meta.setDisplayName(&quot;§6&quot; + modelName + &quot; Block&quot;);&#10;        modelBlock.setItemMeta(meta);&#10;        player.getInventory().addItem(modelBlock);&#10;        player.sendMessage(&quot;You've been given a &quot; + modelName + &quot; block.&quot;);&#10;    }&#10;&#10;    private void placeModelBlock(Player player) {&#10;        Location location = player.getTargetBlock(null, 5).getLocation().add(0, 1, 0);&#10;        location.getBlock().setType(Material.BARRIER);&#10;        player.sendMessage(&quot;Model block placed at &quot; + location.getBlockX() + &quot;, &quot; + location.getBlockY() + &quot;, &quot; + location.getBlockZ());&#10;        // Here you would add code to render the custom model at this location&#10;    }&#10;}&#10;```&#10;&#10;To use this updated ModelPanel class in your plugin, you would do the following:&#10;&#10;1. In your plugin.yml file, add the command:&#10;```yaml&#10;commands:&#10;  modelblock:&#10;    description: Give or place a custom model block&#10;    usage: /&lt;command&gt; &lt;give|place&gt;&#10;```&#10;&#10;2. In your main plugin class:&#10;```java&#10;public class YourPlugin extends JavaPlugin {&#10;    @Override&#10;    public void onEnable() {&#10;        new ModelPanel(this);&#10;    }&#10;}&#10;```&#10;&#10;Now players can use the following commands:&#10;- `/modelblock give` to receive a custom model block item&#10;- `/modelblock place` to place the custom model block where they're looking&#10;&#10;This implementation uses a barrier block as a placeholder. You'll need to add your custom model rendering code in the `placeModelBlock` method to display your actual custom model at the placed location." />
+                    </message>
+                  </list>
+                </messages>
+                <updatedAt value="2024-08-08T20:44:44.9643218" />
+              </chat>
+              <chat>
+                <internalId value="f5daccf1-33a4-4174-b05c-8b4ade6c6432" />
+              </chat>
+              <chat>
+                <internalId value="69cf0f3c-22e6-4b5c-b8b4-87732c46e0c8" />
+              </chat>
+              <chat>
+                <internalId value="15a30815-35fb-403d-a7a9-8da4a7824a5c" />
+              </chat>
+              <chat>
+                <internalId value="3ffb89e1-d4b7-4e7a-9b8c-60cc1fb90e3f" />
+              </chat>
+              <chat>
+                <internalId value="8d186773-3d4b-4c1d-adac-e3928c20c9e9" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="83fd101c-4712-47eb-b07c-c02fa5fa6212" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="89238ff2-8fd8-4c1f-9b83-1fbb36625199" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="0a24eb03-fcbb-4333-9a98-32113193075e" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="1337cfec-f480-4d95-b92f-e26fc5ca19ff" />
+              </chat>
+              <chat>
+                <internalId value="f93dccd0-df48-4184-9110-b77f15c459ec" />
+              </chat>
+              <chat>
+                <internalId value="1a0f97b4-9bfc-4667-b87a-642fd32af15a" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="5a6501ae-07a6-4f55-bfe5-abd849dde9f7" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="21929b81-a8f7-4a06-b3ee-5ef788b0f249" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="99a53236-4700-48e1-956f-78cc7fc1938b" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="e5658cff-cdb1-47b0-8c76-4cd299000a8c" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+              <chat>
+                <internalId value="c81fada0-1369-421b-b113-9be51f3e5d93" />
+                <llm>
+                  <llm>
+                    <model value="anthropic/claude-3-5-sonnet-20240620" />
+                    <provider value="Anthropic" />
+                    <title value="Claude 3.5 Sonnet" />
+                    <usage>
+                      <list>
+                        <option value="chat" />
+                        <option value="edit" />
+                      </list>
+                    </usage>
+                  </llm>
+                </llm>
+              </chat>
+            </list>
+          </chats>
+          <defaultLlm>
+            <llm>
+              <model value="anthropic/claude-3-5-sonnet-20240620" />
+              <provider value="Anthropic" />
+              <tags>
+                <list>
+                  <option value="gateway" />
+                  <option value="accuracy" />
+                  <option value="recommended" />
+                  <option value="free" />
+                </list>
+              </tags>
+              <title value="Claude 3.5 Sonnet" />
+              <usage>
+                <list>
+                  <option value="chat" />
+                  <option value="edit" />
+                </list>
+              </usage>
+            </llm>
+          </defaultLlm>
+        </AccountData>
+      </list>
+    </accountData>
+  </component>
+</project>

@@ -1,0 +1,100 @@
+/* Algemene stijlen */
+body {
+    display: flex;
+    flex-direction: column; /* Sta de inhoud toe om onder elkaar te staan */
+    justify-content: flex-start; /* Begin de uitlijning vanaf de bovenkant */
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #3a3a3a, #1a1a1a);
+    font-family: Arial, sans-serif;
+}
+
+/* Navigatiebalk */
+nav {
+    background-color: #333; /* Donkere achtergrondkleur voor de navigatiebalk */
+    padding: 10px;
+    display: flex;
+    justify-content: center; /* Plaats de links horizontaal gecentreerd */
+    gap: 30px; /* Ruimte tussen de links */
+    border-bottom: 3px solid #000; /* Zwarte onderrand voor visuele scheiding */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Subtiele schaduw voor diepte */
+}
+
+/* Stijl voor de links in de navigatiebalk */
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Consistente kleur met de rest van de knoppen */
+    border: 2px solid #000;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+/* Hover-effect voor de links */
+nav a:hover {
+    background-color: #45a049; /* Zelfde hover-kleur als bij andere knoppen */
+    transform: scale(1.05); /* Kleine vergroting bij hover */
+}
+
+/* Container voor de panel bewerkpagina */
+main {
+    background-color: #4d4d4d;
+    padding: 20px;
+    border-radius: 10px;
+    border: 3px solid #000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 600px; /* Beperk de breedte voor betere leesbaarheid */
+    max-width: 90%;
+}
+
+/* Stijl voor elke knop bewerk sectie */
+.button-edit {
+    margin-bottom: 20px;
+}
+
+/* Label stijl voor inputvelden */
+.button-edit label {
+    font-size: 16px;
+    color: white;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Inputvelden stijl */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+/* Opslaan knop stijl */
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Opslaan knop hover-effect */
+input[type="submit"]:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+/* Extra marges om elementen meer ruimte te geven */
+.button-edit label, input[type="submit"] {
+    margin-top: 10px;
+}

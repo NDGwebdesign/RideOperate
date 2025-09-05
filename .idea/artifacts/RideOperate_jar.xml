@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="RideOperate:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RideOperate_jar</output-path>
+    <root id="archive" name="RideOperate.jar">
+      <element id="module-output" name="RideOperate" />
+    </root>
+  </artifact>
+</component>

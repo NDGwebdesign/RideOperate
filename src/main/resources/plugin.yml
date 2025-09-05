@@ -1,0 +1,164 @@
+name: RideOperate
+version: 2.0.2
+main: me.frp.rideoperate.RideOperate
+api-version: '1.20'
+authors: [Friendspark, NDG-Webdesign]
+
+permissions:
+  rideoperate.*:
+    description: Give access to all RideOperate commands
+    children:
+      rideoperate.main: true
+      rideoperate.createpanel: true
+      rideoperate.deletepanel: true
+      rideoperate.reload: true
+      rideoperate.openpanel: true
+      rideoperate.panels: true
+      rideoperate.help: true
+      rideoperate.info: true
+      rideoperate.weblink: true
+      rideoperate.execute.*: true
+      rideoperate.execute.<itemnName>: true
+
+
+  rideoperate.main:
+    description: Allows access to the main /rp command
+    default: true
+  rideoperate.createpanel:
+    description: Allows creating a panel
+    default: op
+  rideoperate.deletepanel:
+    description: Allows deleting a panel
+    default: op
+  rideoperate.reload:
+    description: Allows reloading the plugin
+    default: op
+  rideoperate.openpanel:
+    description: Allows opening a created panel
+    default: true
+  rideoperate.panels:
+    description: Allows viewing all panels
+    default: true
+  rideoperate.help:
+    description: Allows viewing the help command
+    default: true
+  rideoperate.info:
+    description: Allows viewing plugin information
+    default: true
+  rideoperate.weblink:
+    description: Allows the player to get the web interface link.
+    default: op
+  rideoperate.execute.*:
+    description: Allows the player to execute commands from any panel item.
+    default: op
+  rideoperate.execute.<itemName>:
+    description: Allows the player to execute commands from a specific panel item.
+    default: false
+
+commands:
+  rp:
+    description: Main command for RideOperate
+    usage: /rp <subcommand>
+    permission: rideoperate.main
+    aliases: [ rideoperate ]
+    subcommands:
+      createpanel:
+        description: Create a panel
+        permission: rideoperate.createpanel
+      deletepanel:
+        description: Delete a panel
+        permission: rideoperate.deletepanel
+      reload:
+        description: Reload the plugin
+        permission: rideoperate.reload
+      panel:
+        description: Open the created panel
+        permission: rideoperate.openpanel
+      panels:
+        description: See all your panels
+        permission: rideoperate.panels
+      help:
+        description: See all the commands
+        permission: rideoperate.help
+      info:
+        description: Information about the plugin
+        permission: rideoperate.info
+
+  createpanel:
+    description: create a panel
+    permission: rideoperate.createpanel
+
+  deletepanel:
+    description: delete a panel
+    permission: rideoperate.deletepanel
+
+  rpreload:
+    description: reload the plugin
+    permission: rideoperate.reload
+
+  panel:
+    description: open the created panel
+    permission: rideoperate.openpanel
+
+  panels:
+    description: see all your panels
+    permission: rideoperate.panels
+
+  rphelp:
+    description: see all the commands
+    permission: rideoperate.help
+
+  rpinfo:
+    description: information about the plugin
+    permission: rideoperate.info
+
+  panellink:
+    description: "Get the link to the webserver"
+    usage: "/panellink"
+    permission: "rideoperate.weblink"
+
+  rpsetlore:
+    description: "Set the lore of a panel item"
+    usage: "/rpsetlore <panelName> <itemName> <lore>"
+    permission: "rideoperate.setlore"
+
+  rpchangeitem:
+    description: "Change the item of a panel item"
+    usage: "/rpchangeitem <panelName> <itemName> <item>"
+    permission: "rideoperate.changeitem"
+
+  rpaddbutton:
+    description: "Add a new button to a panel"
+    usage: "/rpaddbutton <panelname> <buttonname> <material>"
+    permission: "rideoperate.addbutton"
+
+  rpdeletebutton:
+    description: Delete a button from a panel
+    usage: /rpdeletebutton <panelName> <buttonName>
+    permission: rideoperate.deletebutton
+
+  rpaddcommand:
+    description: "Add a command to a panel item"
+    usage: "/rpaddcommand <panelName> <itemName> <command>"
+    permission: "rideoperate.addcommand"
+
+  rpcreatecam:
+    description: "Set the camera of a panel item"
+    usage: "/rpcreatecam <camera name> <panel name>"
+    permission: "rideoperate.createcam"
+
+  rpdeletecam:
+    description: "Delete the camera of a panel item"
+    usage: "/rpdeletecam <camera name>"
+    permission: "rideoperate.deletecam"
+
+  rideapikey:
+    description: Reset de API key van de RideOperate plugin
+    usage: /rideapikey reset
+    permission: rideoperate.admin
+    permission-message: Je hebt geen toegang tot dit commando.
+
+
+
+listeners:
+  - me.frp.rideoperate.ClickSign
