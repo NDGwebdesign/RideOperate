@@ -1,6 +1,6 @@
 package me.frp.rideoperate;
 
-import me.frp.rideoperate.api.PanelApiServer;
+import me.frp.rideoperate.api.TcpApiServer;
 import me.frp.rideoperate.commands.*;
 import me.frp.rideoperate.commands.subcommands.DeleteButton;
 import me.frp.rideoperate.commands.subcommands.SubHelp;
@@ -25,7 +25,8 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
 
     private MassagesToggle massagesToggle;
 
-    private PanelApiServer apiServer;
+    private TcpApiServer tcpApiServer;
+
     @Override
     public void onEnable() {
         saveDefaultConfig();
@@ -50,12 +51,10 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
         new AddButton(this);
         new DeleteButton(this);
 
-        try {
-            apiServer = new PanelApiServer(this);
-            apiServer.start();
-        } catch (Exception e) {
-            getLogger().severe("Kon Panel API server niet starten: " + e.getMessage());
-        }
+        File panelFile = new File(getDataFolder(), "panel.yml");
+        int apiPort = getConfig().getInt("api-port", 5555); // Read from config.yml
+        tcpApiServer = new TcpApiServer(apiPort, panelFile);
+        tcpApiServer.start();
 
         getLogger().info("Ride Operate is enabled");
 
@@ -93,7 +92,7 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
             getLogger().info("Webserver gestopt");
         }
 
-        if (apiServer != null) apiServer.stop();
+        if (tcpApiServer != null) tcpApiServer.stop();
 
         massagesToggle = new MassagesToggle(this);
 
@@ -129,10 +128,6 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
             e.printStackTrace();
             return "localhost"; // Fallback to localhost if IP detection fails
         }
-    }
-
-    public PanelApiServer getApiServer() {
-        return apiServer;
     }
 
 }

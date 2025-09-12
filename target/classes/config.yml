@@ -12,4 +12,4 @@ webserver:
   useSSL: false  # Set to true to enable HTTPS
 
 api-key: "mijnsupergeheimeapikey123"
-api-url: "http://ride-operate.test/api.php"
+api-port: 50435
