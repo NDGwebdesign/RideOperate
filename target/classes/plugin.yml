@@ -2,7 +2,7 @@ name: RideOperate
 version: 2.0.2
 main: me.frp.rideoperate.RideOperate
 api-version: '1.20'
-authors: [Friendspark, NDG-Webdesign]
+authors: [FriendsparkMC, NDG-Webdesign]
 
 permissions:
   rideoperate.*:
@@ -45,15 +45,6 @@ permissions:
   rideoperate.info:
     description: Allows viewing plugin information
     default: true
-  rideoperate.weblink:
-    description: Allows the player to get the web interface link.
-    default: op
-  rideoperate.execute.*:
-    description: Allows the player to execute commands from any panel item.
-    default: op
-  rideoperate.execute.<itemName>:
-    description: Allows the player to execute commands from a specific panel item.
-    default: false
 
 commands:
   rp:
@@ -152,11 +143,10 @@ commands:
     usage: "/rpdeletecam <camera name>"
     permission: "rideoperate.deletecam"
 
-  rideapikey:
-    description: Reset de API key van de RideOperate plugin
-    usage: /rideapikey reset
-    permission: rideoperate.admin
-    permission-message: Je hebt geen toegang tot dit commando.
+  genapikey:
+    description: "Generate a new API key"
+    usage: "/genapikey"
+    permission: "rideoperate.genapikey"
 
 
 

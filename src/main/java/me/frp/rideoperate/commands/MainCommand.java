@@ -2,7 +2,6 @@ package me.frp.rideoperate.commands;
 
 import me.frp.rideoperate.RideOperate;
 import me.frp.rideoperate.commands.subcommands.*;
-import me.frp.rideoperate.web.HostSite;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,11 +17,9 @@ import java.util.Set;
 public class MainCommand implements CommandExecutor, TabCompleter {
 
     private final RideOperate plugin;
-    private final HostSite hostSite;
 
-    public MainCommand(RideOperate plugin, HostSite hostSite) {
+    public MainCommand(RideOperate plugin) {
         this.plugin = plugin;
-        this.hostSite = hostSite;
         plugin.getCommand("rp").setExecutor(this);
         plugin.getCommand("rp").setTabCompleter(this);
     }
@@ -47,9 +44,6 @@ public class MainCommand implements CommandExecutor, TabCompleter {
                     return true;
                 case "panels":
                     new SubPanels(plugin).execute(sender, args);
-                    return true;
-                case "link":
-                    new SubLink(plugin, hostSite).execute(sender, args);
                     return true;
                 case "addcommand":
                     new SubAddCommand(plugin).execute(sender, args);

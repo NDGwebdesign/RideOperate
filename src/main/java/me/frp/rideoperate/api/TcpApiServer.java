@@ -1,24 +1,25 @@
 package me.frp.rideoperate.api;
 
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Map;
 import java.util.HashMap;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import java.io.File;
+import java.util.Map;
 
 public class TcpApiServer {
 
     private ServerSocket serverSocket;
     private final int port;
-    private final String apiKey = "mijnsupergeheimeapikey123";
+    private final JavaPlugin plugin;
     private final File panelFile;
 
-    public TcpApiServer(int port, File panelFile) {
+    public TcpApiServer(int port, JavaPlugin plugin, File panelFile) {
         this.port = port;
+        this.plugin = plugin;
         this.panelFile = panelFile;
     }
 
@@ -43,15 +44,18 @@ public class TcpApiServer {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                  BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
-                String key = reader.readLine();
-                if (!apiKey.equals(key)) {
+                // Lees API key van client
+                String receivedKey = reader.readLine();
+                String validKey = plugin.getConfig().getString("api-key", "");
+                if (!receivedKey.equals(validKey)) {
                     writer.write("ERROR: Invalid API key\n");
                     writer.flush();
                     clientSocket.close();
                     return;
                 }
 
-                String command = reader.readLine(); // bijv. GET_PANELS, GET_PANEL:<name>, EXECUTE:<panel>:<action>
+                // Lees commando
+                String command = reader.readLine();
                 if (command == null) command = "";
 
                 if (command.equals("GET_PANELS")) {
@@ -78,7 +82,7 @@ public class TcpApiServer {
                         Map<String, Map<String, String>> panels = loadPanels();
                         if (panels.containsKey(panel) && panels.get(panel).containsKey(action)) {
                             String cmd = panels.get(panel).get(action);
-                            Bukkit.getScheduler().runTask(Bukkit.getPluginManager().getPlugin("RideOperate"),
+                            Bukkit.getScheduler().runTask(plugin,
                                     () -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd));
                             writer.write("OK\n");
                         } else {
@@ -91,7 +95,6 @@ public class TcpApiServer {
 
                 writer.flush();
                 clientSocket.close();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -100,12 +103,14 @@ public class TcpApiServer {
 
     private Map<String, Map<String, String>> loadPanels() {
         Map<String, Map<String, String>> panels = new HashMap<>();
-        FileConfiguration config = YamlConfiguration.loadConfiguration(panelFile);
+        org.bukkit.configuration.file.FileConfiguration config = org.bukkit.configuration.file.YamlConfiguration.loadConfiguration(panelFile);
         if (config.contains("panels")) {
             for (String panelName : config.getConfigurationSection("panels").getKeys(false)) {
                 Map<String, String> actions = new HashMap<>();
-                for (String action : config.getConfigurationSection("panels." + panelName + ".Commands").getKeys(false)) {
-                    actions.put(action, config.getString("panels." + panelName + ".Commands." + action));
+                if (config.contains("panels." + panelName + ".Commands")) {
+                    for (String action : config.getConfigurationSection("panels." + panelName + ".Commands").getKeys(false)) {
+                        actions.put(action, config.getString("panels." + panelName + ".Commands." + action));
+                    }
                 }
                 panels.put(panelName, actions);
             }
