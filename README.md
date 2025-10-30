@@ -6,8 +6,7 @@ RideOperate is a powerful Minecraft plugin designed for theme park and attractio
 
 - Create custom control panels with interactive buttons
 - Add commands to panel buttons
-- Live camera views integration
-- Web interface support
+- Live camera views integration (coming soon)
 - Windows application integration
 - Permission-based access control
 - API support for external applications
@@ -23,27 +22,6 @@ RideOperate is a powerful Minecraft plugin designed for theme park and attractio
 2. Place the jar file in your server's `plugins` folder
 3. Restart your server
 4. Configure the plugin using the config.yml file
-
-## Configuration
-
-The plugin uses several configuration files:
-
-### config.yml
-```yaml
-messages:
-  enabled: true
-  nopermission: "You don't have permission to use this!"
-  allexist: "Panel already exists!"
-  successfullycreated: "Successfully created panel: %panelName%"
-  successfullydeleted: "Successfully deleted panel: %panelName%"
-
-webserver:
-  port: 8080
-  useSSL: false  # Set to true to enable HTTPS
-
-api-key: "your-api-key"
-api-port: 50435
-```
 
 ## Commands
 
@@ -94,7 +72,7 @@ RideOperate supports integration with a Windows application for remote control. 
 
 ### API Configuration
 1. Generate an API key using `/genapikey`
-2. Configure the API port in config.yml (default: 50435)
+2. Configure the API port in config.yml (default: 5555)
 3. Use the generated API key to connect the Windows application
 
 ## Support
