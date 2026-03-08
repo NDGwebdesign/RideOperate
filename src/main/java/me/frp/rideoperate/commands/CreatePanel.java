@@ -22,6 +22,9 @@ public class CreatePanel implements CommandExecutor, Listener {
 
     public CreatePanel(RideOperate plugin) {
         this.plugin = plugin;
+        // Set this class as the command executor for /createpanel
+        plugin.getCommand("createpanel").setExecutor(this);
+
 
         // Register the listener
         Bukkit.getPluginManager().registerEvents(this, plugin);

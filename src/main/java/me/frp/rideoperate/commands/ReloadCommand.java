@@ -12,6 +12,7 @@ public class ReloadCommand implements CommandExecutor {
 
     public ReloadCommand(RideOperate plugin) {
         this.plugin = plugin;
+        plugin.getCommand("rpreload").setExecutor(this);
     }
 
     @Override

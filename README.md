@@ -5,6 +5,9 @@ RideOperate is a powerful Minecraft plugin designed for theme park and attractio
 ## Features
 
 - Create custom control panels with interactive buttons
+- Spawn 3D world panel models from a panel spawner sign item
+- Remove spawned 3D panel models by panel name
+- Hover detection that shows button names in the action bar
 - Add commands to panel buttons
 - Live camera views integration
 - Web interface support
@@ -55,6 +58,8 @@ api-port: 50435
 - `/deletepanel` - Delete an existing panel
 - `/panel` - Open a specific panel
 - `/panels` - View all available panels
+- `/spawnpanel <panel>` - Get a panel spawner sign item; place it to spawn the world panel model
+- `/deletepanelmodel <panel>` - Delete all spawned world panel entities for a panel name
 - `/rpaddbutton <panelname> <buttonname> <material>` - Add a new button to a panel
 - `/rpdeletebutton <panelName> <buttonName>` - Delete a button from a panel
 - `/rpchangeitem <panelName> <itemName> <item>` - Change the item of a panel button
@@ -87,6 +92,9 @@ api-port: 50435
 - `rideoperate.createpanel` - Permission to create panels (default: op)
 - `rideoperate.deletepanel` - Permission to delete panels (default: op)
 - `rideoperate.reload` - Permission to reload the plugin (default: op)
+- `rideoperate.spawnpanel` - Permission to use `/spawnpanel` (default: op)
+- `rideoperate.deletepanelmodel` - Permission to use `/deletepanelmodel` (default: op)
+- `rideoperate.execute.*` - Permission to use all world panel buttons
 
 ## External Application Integration
 
@@ -105,6 +113,6 @@ For issues, feature requests, or questions:
 
 ## Version Information
 
-- Current Version: 2.0.2
+- Current Version: 2.1.0
 - API Version: 1.20
 - Authors: FriendsparkMC, NDG-Webdesign

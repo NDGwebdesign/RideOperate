@@ -1,6 +1,7 @@
 package me.frp.rideoperate.commands;
 
 import me.frp.rideoperate.RideOperate;
+import me.frp.rideoperate.panel.PanelManager;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -73,6 +74,7 @@ public class AddButton implements CommandExecutor, TabCompleter {
 
         try {
             panelConfig.save(panelFile);
+            new PanelManager(plugin).spawnPanel(player, panelName);
             player.sendMessage("§aButton '" + buttonName + "' with meterial '" + materialName + "' added to panel '" + panelName + "'!");
         } catch (Exception e) {
             player.sendMessage("§cThere is an error: " + e.getMessage());

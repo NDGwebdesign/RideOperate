@@ -6,6 +6,8 @@ import me.frp.rideoperate.commands.subcommands.DeleteButton;
 import me.frp.rideoperate.commands.subcommands.SubHelp;
 import me.frp.rideoperate.listener.LiveCam;
 import me.frp.rideoperate.listener.MassagesToggle;
+import me.frp.rideoperate.panel.PanelInteractionListener;
+import me.frp.rideoperate.panel.PanelSpawnItemListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.CommandExecutor;
@@ -15,8 +17,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-
-public final class RideOperate extends JavaPlugin implements CommandExecutor {
+public final class RideOperate extends JavaPlugin {
 
     private static RideOperate instance;
 
@@ -28,8 +29,8 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
     public void onEnable() {
         saveDefaultConfig();
 
-        getCommand("createpanel").setExecutor(new CreatePanel(this));
-        getCommand("rpreload").setExecutor(new ReloadCommand(this));
+        new CreatePanel(this);
+        new ReloadCommand(this);
         new MainCommand(this);
         new OpenPanel(this);
         new DeletePanel(this);
@@ -38,7 +39,7 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
         new info(this);
         new SubHelp(this);
         new AddCommand(this);
-        getCommand("rpsetlore").setExecutor(new Setlore( this));
+        new Setlore(this);
         new CreateCam(this);
         new DeleteCam(this);
         new ClickSign(this);
@@ -46,10 +47,18 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
         new changeItem(this);
         new AddButton(this);
         new DeleteButton(this);
+        SpawnPanelCommand spawnPanel = new SpawnPanelCommand(this);
+        getCommand("spawnpanel").setExecutor(spawnPanel);
+        getCommand("spawnpanel").setTabCompleter(spawnPanel);
+        deletePanelModel deletePanelModelCommand = new deletePanelModel(this);
+        getCommand("deletepanelmodel").setExecutor(deletePanelModelCommand);
+        getCommand("deletepanelmodel").setTabCompleter(deletePanelModelCommand);
+        new PanelInteractionListener(this);
+        new PanelSpawnItemListener(this);
 
         File panelFile = new File(getDataFolder(), "panel.yml");
         int apiPort = getConfig().getInt("api-port", 5555); // Read from config.yml
-        tcpApiServer = new TcpApiServer(apiPort,this, panelFile);
+        tcpApiServer = new TcpApiServer(apiPort, this, panelFile);
         tcpApiServer.start();
         this.getCommand("genapikey").setExecutor(new GenAPIKey(this));
 
@@ -67,7 +76,8 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
         // Plugin shutdown logic
         getLogger().info("Ride Operate is disabled");
 
-        if (tcpApiServer != null) tcpApiServer.stop();
+        if (tcpApiServer != null)
+            tcpApiServer.stop();
 
         massagesToggle = new MassagesToggle(this);
 
@@ -75,7 +85,6 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
         if (massagesToggle.areMessagesEnabled()) {
             getLogger().info(massagesToggle.getNoPermissionMessage());
         }
-
 
     }
 
@@ -92,7 +101,6 @@ public final class RideOperate extends JavaPlugin implements CommandExecutor {
             getLogger().info(fileName + " loaded.");
         }
     }
-
 
     private String getServerIP() {
         // Implement logic to get the server IP address

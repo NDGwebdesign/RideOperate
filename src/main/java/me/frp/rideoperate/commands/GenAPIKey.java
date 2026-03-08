@@ -22,9 +22,11 @@ public class GenAPIKey implements CommandExecutor {
 
         FileConfiguration config = plugin.getConfig();
         config.set("api-key", newKey);
+
         plugin.saveConfig();
 
-        sender.sendMessage("§aNieuwe API Key gegenereerd: §e" + newKey);
+        sender.sendMessage("§aNew API key generated: §e" + newKey);
+        sender.sendMessage("§aMake sure to update your external applications with the new key.");
         return true;
     }
 }
