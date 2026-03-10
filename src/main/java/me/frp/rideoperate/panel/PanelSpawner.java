@@ -116,14 +116,14 @@ public class PanelSpawner {
 
                 // SIDE TRIMS
                 spawnPartRotated(world, origin, Material.POLISHED_ANDESITE,
-                                vec(10.2f, 13.1f, -5),
-                                size(8.3f, 2, 1),
+                                vec(1.1f, 13.2f, -5),
+                                size(0.9f, 10f, 2f),
                                 12.5f,
                                 plugin, panelName);
 
                 spawnPartRotated(world, origin, Material.POLISHED_ANDESITE,
-                                vec(10.2f, 13.3f, 19),
-                                size(8.3f, 2, 1),
+                                vec(14f, 13.2f, -5),
+                                size(0.9f, 10f, 2f),
                                 12.5f,
                                 plugin, panelName);
         }
