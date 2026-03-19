@@ -77,54 +77,43 @@ public class PanelSpawner {
                 if (world == null)
                         return;
 
-                // BASE
-                spawnPart(world, origin, Material.BLACK_CONCRETE,
-                                vec(1, 0, -4),
-                                size(14, 1, 24),
+                // Element 1
+                spawnPartFromTo(world, origin, Material.POLISHED_ANDESITE,
+                                bb(-8, 0, 0),
+                                bb(24, 18, 16),
                                 plugin, panelName);
 
-                // LEFT WALL
-                spawnPart(world, origin, Material.POLISHED_ANDESITE,
-                                vec(0, 0, -4),
-                                size(1, 13, 23),
+                // Element 2
+                spawnPartFromToRotated(world, origin, Material.GRAY_CONCRETE,
+                                bb(-8, 16, 1),
+                                bb(24, 18, 17),
+                                -22.5f,
+                                'x',
+                                bb(0, 16, 1),
                                 plugin, panelName);
 
-                // RIGHT WALL
-                spawnPart(world, origin, Material.POLISHED_ANDESITE,
-                                vec(15, 0, -5),
-                                size(1, 16, 25),
+                // Element 3
+                spawnPartFromTo(world, origin, Material.POLISHED_DEEPSLATE,
+                                bb(-8, 18, 13.8f),
+                                bb(24, 24, 16),
                                 plugin, panelName);
 
-                // BACK WALL
-                spawnPart(world, origin, Material.POLISHED_DEEPSLATE,
-                                vec(0, 0, -5),
-                                size(16, 13, 1),
+                // Element 4
+                spawnPartFromToRotated(world, origin, Material.POLISHED_ANDESITE,
+                                bb(22, 17, 6),
+                                bb(24, 21, 15),
+                                -22.5f,
+                                'x',
+                                bb(22, 18, 13),
                                 plugin, panelName);
 
-                // FRONT WALL
-                spawnPart(world, origin, Material.POLISHED_DEEPSLATE,
-                                vec(0, 0, 19),
-                                size(16, 13, 1),
-                                plugin, panelName);
-
-                // SLOPED CONTROL SURFACE
-                spawnPartRotated(world, origin, Material.GRAY_CONCRETE,
-                                vec(1, 13.4f, -5),
-                                size(15, 1, 25),
-                                12.5f,
-                                plugin, panelName);
-
-                // SIDE TRIMS
-                spawnPartRotated(world, origin, Material.POLISHED_ANDESITE,
-                                vec(1.1f, 13.2f, -5),
-                                size(0.9f, 10f, 2f),
-                                12.5f,
-                                plugin, panelName);
-
-                spawnPartRotated(world, origin, Material.POLISHED_ANDESITE,
-                                vec(14f, 13.2f, -5),
-                                size(0.9f, 10f, 2f),
-                                12.5f,
+                // Element 5
+                spawnPartFromToRotated(world, origin, Material.POLISHED_ANDESITE,
+                                bb(-8, 17, 6),
+                                bb(-6, 21, 15),
+                                -22.5f,
+                                'x',
+                                bb(-8, 18, 13),
                                 plugin, panelName);
         }
 
@@ -138,8 +127,6 @@ public class PanelSpawner {
                         RideOperate plugin,
                         Location panelCenter,
                         Vector forward,
-                        Vector right,
-                        Material material,
                         int index,
                         int total,
                         float yaw,
@@ -155,30 +142,58 @@ public class PanelSpawner {
                 int column = index % columns;
                 int rows = (int) Math.ceil(total / (double) columns);
 
-                double spacingY = 0.22;
-                double spacingX = 0.30;
-                double firstOffsetY = (rows - 1) * spacingY / 2.0;
+                // Place buttons in model-space and project them onto the sloped control
+                // surface.
+                float xCenter = 0f;
+                float xSpacing = 4.0f;
+                float xModel = columns == 1
+                                ? xCenter
+                                : xCenter + (column - ((columns - 1) / 2f)) * xSpacing;
 
-                double yOffset = firstOffsetY - (row * spacingY);
-                double xOffset = columns == 1 ? 0.0 : ((column - (columns - 1) / 2.0) * spacingX);
-                double forwardOffset = 0.52 - yOffset;
-                double verticalLift = 0.80;
+                float zMin = 4.8f;
+                float zMax = 13.2f;
+                float zModel;
+                if (rows <= 1) {
+                        zModel = (zMin + zMax) / 2f;
+                } else {
+                        float t = row / (float) (rows - 1);
+                        zModel = zMax - ((zMax - zMin) * t);
+                }
 
-                Location location = panelCenter.clone()
-                                .add(right.clone().multiply(xOffset))
-                                .add(-0.5, Math.toRadians(12.5) + verticalLift, 0.0)
-                                .add(forward.clone().multiply(forwardOffset));
+                float controlAngleRad = (float) Math.toRadians(-22.5f);
+                float pivotY = 16f;
+                float pivotZ = 1f;
+                float yTopSurface = 18f;
+                float yLift = 0.18f;
+
+                float yRel = yTopSurface - pivotY;
+                float zRel = zModel - pivotZ;
+                float cos = (float) Math.cos(controlAngleRad);
+                float sin = (float) Math.sin(controlAngleRad);
+
+                float yModel = pivotY + (yRel * cos - zRel * sin) + yLift;
+                float zModelRotated = pivotZ + (yRel * sin + zRel * cos);
+
+                Vector horizontalForward = forward.clone().setY(0);
+                if (horizontalForward.lengthSquared() == 0) {
+                        horizontalForward = new Vector(0, 0, 1);
+                }
+                horizontalForward.normalize();
+                Vector horizontalRight = new Vector(0, 1, 0).crossProduct(horizontalForward).normalize();
+
+                Location location = modelToWorld(panelCenter, horizontalRight, horizontalForward, xModel, yModel,
+                                zModelRotated);
 
                 location.setYaw(yaw);
                 location.setPitch(0f);
 
                 Quaternionf tilt = new Quaternionf()
-                                .rotateZ((float) Math.toRadians(12.5))
+                                .rotateX((float) Math.toRadians(-22.5f))
                                 .rotateY((float) Math.toRadians(90f));
 
                 // Button item
                 ItemDisplay display = (ItemDisplay) world.spawnEntity(location, EntityType.ITEM_DISPLAY);
-                display.setItemStack(new ItemStack(material));
+                display.setItemStack(new ItemStack(Material.STONE_BUTTON));
                 display.setTransformation(new Transformation(
                                 new Vector3f(0f, 0f, 0.015f),
                                 tilt,
@@ -197,6 +212,20 @@ public class PanelSpawner {
                 applyButtonMetadata(plugin, hitbox, panelName, buttonName);
 
                 return display;
+        }
+
+        private static Location modelToWorld(
+                        Location origin,
+                        Vector right,
+                        Vector forward,
+                        float modelX,
+                        float modelY,
+                        float modelZ) {
+
+                return origin.clone()
+                                .add(right.clone().multiply(modelX / 16.0))
+                                .add(0.0, modelY / 16.0, 0.0)
+                                .add(forward.clone().multiply(modelZ / 16.0));
         }
 
         /*
@@ -235,17 +264,54 @@ public class PanelSpawner {
                                 panelName);
         }
 
-        private static void spawnPartRotated(
+        private static void spawnPartFromTo(
                         World world,
                         Location origin,
                         Material material,
-                        Vector3f translation,
-                        Vector3f scale,
-                        float angle,
+                        Vector3f from,
+                        Vector3f to,
                         RideOperate plugin,
                         String panelName) {
 
-                Quaternionf rotation = new Quaternionf().rotateZ((float) Math.toRadians(angle));
+                Vector3f translation = new Vector3f(from).div(16f);
+                Vector3f scale = new Vector3f(to).sub(from).div(16f);
+
+                spawnPart(world, origin, material, translation, scale, plugin, panelName);
+        }
+
+        private static void spawnPartFromToRotated(
+                        World world,
+                        Location origin,
+                        Material material,
+                        Vector3f from,
+                        Vector3f to,
+                        float angle,
+                        char axis,
+                        Vector3f pivot,
+                        RideOperate plugin,
+                        String panelName) {
+
+                Vector3f fromScaled = new Vector3f(from).div(16f);
+                Vector3f scale = new Vector3f(to).sub(from).div(16f);
+                Vector3f pivotScaled = new Vector3f(pivot).div(16f);
+
+                Quaternionf rotation = new Quaternionf();
+                float radians = (float) Math.toRadians(angle);
+
+                if (axis == 'x') {
+                        rotation.rotateX(radians);
+                } else if (axis == 'y') {
+                        rotation.rotateY(radians);
+                } else if (axis == 'z') {
+                        rotation.rotateZ(radians);
+                } else {
+                        throw new IllegalArgumentException("Unsupported axis: " + axis);
+                }
+
+                Vector3f translation = new Vector3f(fromScaled)
+                                .sub(pivotScaled)
+                                .rotate(rotation)
+                                .add(pivotScaled);
 
                 BlockDisplay part = (BlockDisplay) world.spawnEntity(origin, EntityType.BLOCK_DISPLAY);
 
@@ -273,6 +339,10 @@ public class PanelSpawner {
          * VECTOR HELPERS (Blockbench -> Minecraft scale)
          *
          */
+
+        private static Vector3f bb(float x, float y, float z) {
+                return new Vector3f(x, y, z);
+        }
 
         private static Vector3f vec(float x, float y, float z) {
                 return new Vector3f(x / 16f, y / 16f, z / 16f);

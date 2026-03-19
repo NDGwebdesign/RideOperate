@@ -2,7 +2,6 @@ package me.frp.rideoperate.panel;
 
 import me.frp.rideoperate.RideOperate;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,7 +11,6 @@ import org.bukkit.util.Vector;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class PanelManager {
 
@@ -78,7 +76,6 @@ public class PanelManager {
         }
         forward.normalize();
 
-        Vector right = forward.clone().crossProduct(new Vector(0, 1, 0)).normalize();
         float yaw = yawFromForward(forward);
 
         String panelPath = "panels." + resolvedPanelName;
@@ -107,19 +104,7 @@ public class PanelManager {
 
         for (int i = 0; i < buttonKeys.size(); i++) {
             String key = buttonKeys.get(i);
-            String buttonPath = panelPath + "." + key;
-
-            String materialName = firstNonBlank(
-                    config.getString(buttonPath + ".material"),
-                    config.getString(buttonPath + ".metial"),
-                    config.getString(buttonPath + ".metail"),
-                    "REDSTONE_TORCH");
-            Material material = Material.matchMaterial(materialName);
-            if (material == null) {
-                material = Material.REDSTONE_TORCH;
-            }
-
-            PanelSpawner.spawnButton(plugin, base, forward, right, material, i, buttonKeys.size(), yaw,
+            PanelSpawner.spawnButton(plugin, base, forward, i, buttonKeys.size(), yaw,
                     resolvedPanelName, key);
         }
 
@@ -132,15 +117,6 @@ public class PanelManager {
         }
         YamlConfiguration config = YamlConfiguration.loadConfiguration(panelFile);
         return resolvePanelName(config, panelName) != null;
-    }
-
-    private String firstNonBlank(String... values) {
-        for (String value : values) {
-            if (value != null && !value.trim().isEmpty()) {
-                return value.trim().toUpperCase(Locale.ROOT);
-            }
-        }
-        return "REDSTONE_TORCH";
     }
 
     private String resolvePanelName(YamlConfiguration config, String panelNameInput) {
